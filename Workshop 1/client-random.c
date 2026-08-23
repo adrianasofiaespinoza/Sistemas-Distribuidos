@@ -8,7 +8,7 @@
 
 #define BUFSZ 1024
 
-/* Genera una cadena aleatoria de letras minúsculas, tamaño [minLen, maxLen] */
+
 void generar_mensaje(char *buf, int longitud) {
     const char letras[] = "abcdefghijklmnopqrstuvwxyz";
     for (int i = 0; i < longitud; i++) {
@@ -47,14 +47,14 @@ int main() {
         return 1;
     }
 
-    /* 1. Generar un numero aleatorio de mensajes a enviar (ej. de 3 a 8) */
+
     int num_messages = 3 + rand() % 6;  /* 3..8 */
     printf("\n[CLIENT] Generated random number of messages to send: %d\n\n", num_messages);
 
     char msg[64];
     char buffer[BUFSZ];
 
-    /* 2. Bucle para enviar esa cantidad exacta de mensajes */
+
     for (int i = 0; i < num_messages; i++) {
         int clientSocket = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -71,7 +71,7 @@ int main() {
             break;  /* Si falla la conexion, terminamos */
         }
 
-        /* 3. Generar contenido aleatorio (letras minusculas, longitud 5 a 15) */
+
         int msg_length = 5 + rand() % 11;  /* 5..15 */
         generar_mensaje(msg, msg_length);
 
@@ -86,7 +86,7 @@ int main() {
             printf("From Server: %s\n", buffer);
         }
 
-        /* Cerrar la conexion despues de cada mensaje */
+
         close(clientSocket);
     }
 
