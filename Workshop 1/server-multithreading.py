@@ -31,7 +31,7 @@ def handle_client(connectionSocket, addr):
 
         capitalizedSentence = sentence.upper()
 
-        # Simula procesamiento del servidor
+    
         time.sleep(3)
 
         connectionSocket.send(capitalizedSentence.encode())
@@ -48,7 +48,6 @@ while True:
     try:
         connectionSocket, addr = serverSocket.accept()
 
-        # Crear un thread para este cliente
         client_thread = threading.Thread(
             target=handle_client,
             args=(connectionSocket, addr)
