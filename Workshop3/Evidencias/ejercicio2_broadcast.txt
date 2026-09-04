@@ -1,0 +1,16 @@
+# Terminal 1 - Student A
+PS C:\Users\User\Desktop\Sistemas-Distribuidos\Sistemas-Distribuidos\Workshop3> python entity.py
+Entity waiting for location requests on UDP port 50000...
+Request from 192.168.1.14:55355 -> studentA-Name
+Response sent -> studentA-Name:192.168.1.14
+Request from 192.168.1.14:55356 -> studentB-Name
+
+# Terminal 2 - Student B, successful lookup
+PS C:\Users\User\Desktop\Sistemas-Distribuidos\Sistemas-Distribuidos\Workshop3> python finder.py studentA-Name
+Searching for entity: studentA-Name
+Entity found: studentA-Name:192.168.1.14
+
+# Terminal 2 - Student B, unsuccessful lookup
+PS C:\Users\User\Desktop\Sistemas-Distribuidos\Sistemas-Distribuidos\Workshop3> python finder.py studentB-Name
+Searching for entity: studentB-Name
+Entity not found

@@ -1,0 +1,66 @@
+PS C:\Users\User\Desktop\Sistemas-Distribuidos\Sistemas-Distribuidos\Workshop3> ipconfig | findstr /i IPv4
+   IPv4 Address. . . . . . . . . . . : 192.168.1.14
+   IPv4 Address. . . . . . . . . . . : 172.18.16.1
+
+PS C:\Users\User\Desktop\Sistemas-Distribuidos\Sistemas-Distribuidos\Workshop3> ipconfig | findstr /i Gateway
+   Default Gateway . . . . . . . . . : 192.168.1.1
+   Default Gateway . . . . . . . . . :
+
+PS C:\Users\User\Desktop\Sistemas-Distribuidos\Sistemas-Distribuidos\Workshop3> arp -a
+
+Interface: 192.168.1.14 --- 0xf
+  Internet Address      Physical Address      Type
+  192.168.1.1           84-d3-43-8f-72-3c     dynamic   
+  192.168.1.8           8c-7a-3d-ea-94-b4     dynamic   
+  192.168.1.12          a2-f7-8f-2b-5c-43     dynamic   
+  192.168.1.16          66-5d-9e-d2-08-bb     dynamic   
+  192.168.1.255         ff-ff-ff-ff-ff-ff     static    
+  224.0.0.2             01-00-5e-00-00-02     static    
+  224.0.0.22            01-00-5e-00-00-16     static    
+  224.0.0.251           01-00-5e-00-00-fb     static    
+  224.0.0.252           01-00-5e-00-00-fc     static    
+  239.255.255.250       01-00-5e-7f-ff-fa     static    
+  255.255.255.255       ff-ff-ff-ff-ff-ff     static    
+
+Interface: 172.18.16.1 --- 0x30
+  Internet Address      Physical Address      Type
+  172.18.24.189         00-15-5d-84-50-42     dynamic   
+  172.18.31.255         ff-ff-ff-ff-ff-ff     static    
+  224.0.0.22            01-00-5e-00-00-16     static    
+  224.0.0.251           01-00-5e-00-00-fb     static    
+  239.255.255.250       01-00-5e-7f-ff-fa     static
+
+PS C:\Users\User\Desktop\Sistemas-Distribuidos\Sistemas-Distribuidos\Workshop3> ping 192.168.1.1 -n 2
+
+Pinging 192.168.1.1 with 32 bytes of data:
+Reply from 192.168.1.1: bytes=32 time=2ms TTL=64
+Reply from 192.168.1.1: bytes=32 time=2ms TTL=64
+
+Ping statistics for 192.168.1.1:
+    Packets: Sent = 2, Received = 2, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 2ms, Maximum = 2ms, Average = 2ms
+
+PS C:\Users\User\Desktop\Sistemas-Distribuidos\Sistemas-Distribuidos\Workshop3> arp -a
+
+Interface: 192.168.1.14 --- 0xf
+  Internet Address      Physical Address      Type
+  192.168.1.1           84-d3-43-8f-72-3c     dynamic   
+  192.168.1.8           8c-7a-3d-ea-94-b4     dynamic   
+  192.168.1.12          a2-f7-8f-2b-5c-43     dynamic   
+  192.168.1.16          66-5d-9e-d2-08-bb     dynamic   
+  192.168.1.255         ff-ff-ff-ff-ff-ff     static    
+  224.0.0.2             01-00-5e-00-00-02     static    
+  224.0.0.22            01-00-5e-00-00-16     static    
+  224.0.0.251           01-00-5e-00-00-fb     static    
+  224.0.0.252           01-00-5e-00-00-fc     static    
+  239.255.255.250       01-00-5e-7f-ff-fa     static    
+  255.255.255.255       ff-ff-ff-ff-ff-ff     static    
+
+Interface: 172.18.16.1 --- 0x30
+  Internet Address      Physical Address      Type
+  172.18.24.189         00-15-5d-84-50-42     dynamic   
+  172.18.31.255         ff-ff-ff-ff-ff-ff     static    
+  224.0.0.22            01-00-5e-00-00-16     static    
+  224.0.0.251           01-00-5e-00-00-fb     static    
+  239.255.255.250       01-00-5e-7f-ff-fa     static

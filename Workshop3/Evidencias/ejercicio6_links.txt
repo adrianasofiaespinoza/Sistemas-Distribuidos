@@ -1,0 +1,30 @@
+PS C:\Users\User\Desktop\Sistemas-Distribuidos\Sistemas-Distribuidos\Workshop3> wsl -d docker-desktop -- sh /mnt/host/c/Users/User/Desktop/Sistemas-Distribuidos/Sistemas-Distribuidos/Workshop3/run_links_evidence.sh /tmp/naming_lab_1788482375_25296
+$ find .
+.
+./data
+./data/original.txt
+
+$ ln data/original.txt hardlink.txt
+$ ln -s data/original.txt softlink.txt
+
+$ ls -li hardlink.txt softlink.txt data/original.txt
+    858 -rw-r--r--    2 root     root            20 Sep  4 00:39 data/original.txt
+    858 -rw-r--r--    2 root     root            20 Sep  4 00:39 hardlink.txt
+    859 lrwxrwxrwx    1 root     root            17 Sep  4 00:39 softlink.txt -> data/original.txt
+
+$ cat hardlink.txt
+Distributed Systems
+$ cat softlink.txt
+Distributed Systems
+
+$ mv data/original.txt data/renamed.txt
+$ cat hardlink.txt
+Distributed Systems
+$ cat softlink.txt
+cat: can't open 'softlink.txt': No such file or directory
+
+$ rm data/renamed.txt
+$ cat hardlink.txt
+Distributed Systems
+$ cat softlink.txt
+cat: can't open 'softlink.txt': No such file or directory

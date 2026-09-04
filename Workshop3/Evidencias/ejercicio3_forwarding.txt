@@ -1,0 +1,26 @@
+PS C:\Users\User\Desktop\Sistemas-Distribuidos\Sistemas-Distribuidos\Workshop3> python forwarding.py
+=== Initial chain resolution ===
+Following: A -> B
+Following: B -> C
+Following: C -> D
+Following: D -> 192.168.1.50:5000
+Final address: 192.168.1.50:5000
+Number of hops: 4
+
+=== After shortcut optimization ===
+Following: A -> 192.168.1.50:5000
+Final address: 192.168.1.50:5000
+Number of hops: 1
+
+=== Simulating failure: del locations['C'] ===
+1. Running resolution via shortcut (from A):
+Following: A -> 192.168.1.50:5000
+Final address: 192.168.1.50:5000
+Number of hops: 1
+
+2. Running original chain again (restoring A -> B):
+Following: A -> B
+Following: B -> C
+Final address: C
+Number of hops: 2
+Observation: Chain broken at missing node C! Target unreached.

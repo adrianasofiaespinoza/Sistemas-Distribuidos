@@ -1,0 +1,31 @@
+PS C:\Users\User\Desktop\Sistemas-Distribuidos\Sistemas-Distribuidos\Workshop3> python hls.py
+=== Initial Lookups ===
+Lookup server01 from IBARRA:
+IBARRA
+-> server01
+Address: 10.0.1.20
+
+Lookup server02 from IBARRA:
+IBARRA
+-> ECUADOR
+-> QUITO
+-> server02
+Address: 10.0.2.30
+
+Lookup server99 from IBARRA:
+IBARRA
+-> ECUADOR
+-> AMERICA
+-> ROOT
+Entity not found
+Address: None
+
+=== Moving server01 from IBARRA to QUITO ===
+server01 moved to QUITO (new address: 10.0.2.25)
+
+Lookup server01 from IBARRA after move:
+IBARRA
+-> ECUADOR
+-> QUITO
+-> server01
+Address: 10.0.2.25

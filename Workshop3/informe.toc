@@ -1,0 +1,35 @@
+\babel@toc {english}{}\relax 
+\contentsline {section}{\numberline {1}Introduction and Theoretical Framework}{3}{section.1}%
+\contentsline {section}{\numberline {2}Exercise 1 --- Identifiers vs. Addresses}{4}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Problem Statement and Objectives}{4}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Implementation}{4}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Execution Evidence}{5}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Analytical Evaluation}{5}{subsection.2.4}%
+\contentsline {section}{\numberline {3}Exercise 2 --- Locating an Entity by Broadcast}{6}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Problem Statement and Objectives}{6}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Link-Layer Inspection (ARP / Neighbor Cache)}{6}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Application-Level Implementation}{10}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Execution Evidence}{11}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Scalability Limitations of Broadcasting}{12}{subsection.3.5}%
+\contentsline {section}{\numberline {4}Exercise 3 --- Forwarding Pointers}{12}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Problem Statement and Objectives}{12}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Implementation}{13}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Execution Evidence}{14}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Comparative Analysis and Vulnerability}{15}{subsection.4.4}%
+\contentsline {section}{\numberline {5}Exercise 4 --- Implementing a Simplified Chord Ring}{16}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Problem Statement and Mathematical Model}{16}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Implementation (\texttt {chord.py})}{16}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Part A --- Successor Verification}{18}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Part B --- Finger Tables}{19}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}Part C --- Lookup Routing and Visual Ring Representation}{19}{subsection.5.5}%
+\contentsline {section}{\numberline {6}Exercise 5 --- Hierarchical Location Service (HLS)}{22}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Problem Statement and Architecture}{22}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Implementation (\texttt {hls.py})}{23}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Execution Evidence and Entity Migration}{27}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}The Locality Principle in HLS}{28}{subsection.6.4}%
+\contentsline {section}{\numberline {7}Exercise 6 --- Name Spaces, Resolution, Hard Links and Soft Links}{28}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Problem Statement and Graph-Theoretic Model}{28}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Empirical Experimentation}{29}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Graph Representation and Inode Analysis}{31}{subsection.7.3}%
+\contentsline {section}{\numberline {8}Comparative Synthesis of Naming Schemes}{31}{section.8}%
+\contentsline {section}{\numberline {9}Conclusions}{32}{section.9}%

@@ -1,0 +1,6 @@
+PS C:\Users\User\Desktop\Sistemas-Distribuidos\Sistemas-Distribuidos\Workshop3> python identifiers.py
+Entity ID : fc1ce712-f56d-5831-be86-2b82ea445f5a
+Hostname  : DESKTOP-MLJEOGD
+Address   : 192.168.1.14
+Initial entity state: {'id': 'fc1ce712-f56d-5831-be86-2b82ea445f5a', 'address': ('192.168.1.14', 5000)}
+Updated entity state: {'id': 'fc1ce712-f56d-5831-be86-2b82ea445f5a', 'address': ('192.168.1.14', 6000)}

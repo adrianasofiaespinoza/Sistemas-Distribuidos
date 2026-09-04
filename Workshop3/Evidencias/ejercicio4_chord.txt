@@ -1,0 +1,45 @@
+PS C:\Users\User\Desktop\Sistemas-Distribuidos\Sistemas-Distribuidos\Workshop3> python chord.py
+=== Part A - Chord definition ===
+Key: 3 -> node: 4
+Key: 8 -> node: 9
+Key: 12 -> node: 14
+Key: 19 -> node: 20
+Key: 26 -> node: 28
+Key: 30 -> node: 1
+
+=== Part B - Finger tables ===
+Node 1 Finger Table:
+i	start	successor
+1	2	4
+2	3	4
+3	5	9
+4	9	9
+5	17	18
+
+Finger tables for all nodes:
+Node  1: FT = [4, 4, 9, 9, 18]
+Node  4: FT = [9, 9, 9, 14, 20]
+Node  9: FT = [11, 11, 14, 18, 28]
+Node 11: FT = [14, 14, 18, 20, 28]
+Node 14: FT = [18, 18, 18, 28, 1]
+Node 18: FT = [20, 20, 28, 28, 4]
+Node 20: FT = [21, 28, 28, 28, 4]
+Node 21: FT = [28, 28, 28, 1, 9]
+Node 28: FT = [1, 1, 1, 4, 14]
+
+=== Part C - Lookup ===
+Lookup key 26 starting at 1
+1
+-> 18
+-> 20
+-> 21
+-> 28
+Total hops = 4
+
+Lookup key 12 starting at 28
+28
+-> 4
+-> 9
+-> 11
+-> 14
+Total hops = 4

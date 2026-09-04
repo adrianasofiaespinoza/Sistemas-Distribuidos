@@ -1,0 +1,17 @@
+\babel@toc {english}{}\relax 
+\contentsline {section}{\numberline {1}Introduction}{1}{section.1}%
+\contentsline {section}{\numberline {2}Preliminary Review Activities and Workshop Requirements}{1}{section.2}%
+\contentsline {section}{\numberline {3}Activity 2: Distributed Matrix Manager with XML-RPC}{2}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Architecture}{2}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Implementation}{3}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Functional Behavior}{3}{subsection.3.3}%
+\contentsline {section}{\numberline {4}Activity 4: Multi-Publisher and Multi-Subscriber System}{3}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Architecture}{3}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Implementation}{4}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Technical Challenge: Slow Joiner}{4}{subsection.4.3}%
+\contentsline {section}{\numberline {5}Activity 6: Source-Broker-Worker Pipeline}{5}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Architecture}{5}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Implementation}{5}{subsection.5.2}%
+\contentsline {section}{\numberline {6}Experimental Evaluation and Evidence}{6}{section.6}%
+\contentsline {section}{\numberline {7}Comparative Discussion}{7}{section.7}%
+\contentsline {section}{\numberline {8}Conclusions}{7}{section.8}%
