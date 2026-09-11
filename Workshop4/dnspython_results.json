@@ -1,0 +1,87 @@
+{
+  "B1": {
+    "domain": "yachaytech.edu.ec",
+    "type": "A",
+    "result": [
+      "190.103.191.42"
+    ]
+  },
+  "B2": {
+    "ip": "8.8.8.8",
+    "type": "PTR",
+    "result": [
+      "dns.google."
+    ]
+  },
+  "B3": {
+    "domain": "hpc.cedia.edu.ec",
+    "dns_server": "1.1.1.1",
+    "result": [
+      "201.159.220.90"
+    ]
+  },
+  "B4": {
+    "domain": "yachaytech.edu.ec",
+    "type": "MX",
+    "result": [
+      {
+        "preference": 0,
+        "exchange": "yachaytech-edu-ec.mail.protection.outlook.com."
+      }
+    ]
+  },
+  "B5": {
+    "domain": "yachaytech.edu.ec",
+    "type": "NS",
+    "result": [
+      "pns102.dominiosecuador.ec.",
+      "ns104.cloudns.net.",
+      "pns103.dominiosecuador.ec.",
+      "pns104.cloudns.net.",
+      "pns101.dominiosecuador.ec.",
+      "ns101.dominiosecuador.ec.",
+      "ns102.dominiosecuador.ec."
+    ]
+  },
+  "B6": {
+    "domain": "yachaytech.edu.ec",
+    "type": "SOA",
+    "result": [
+      {
+        "mname": "ns101.cloudns.net.",
+        "rname": "support.cloudns.net.",
+        "serial": 2026082103,
+        "refresh": 7200,
+        "retry": 1800,
+        "expire": 1209600,
+        "minimum": 3600
+      }
+    ]
+  },
+  "B7": {
+    "domain": "www.microsoft.com",
+    "type": "CNAME",
+    "result": [
+      "www.microsoft.com-c-3.edgekey.net."
+    ]
+  },
+  "B8": {
+    "domain": "yachaytech.edu.ec",
+    "debug_details": {
+      "opcode": "QUERY",
+      "rcode": "NOERROR",
+      "id": 48823,
+      "flags": "QR RD RA",
+      "question_count": 1,
+      "answer_count": 1,
+      "authority_count": 0,
+      "additional_count": 0,
+      "raw_response_text": "id 48823\nopcode QUERY\nrcode NOERROR\nflags QR RD RA\n;QUESTION\nyachaytech.edu.ec. IN A\n;ANSWER\nyachaytech.edu.ec. 3275 IN A 190.103.191.42\n;AUTHORITY\n;ADDITIONAL"
+    }
+  },
+  "B9": {
+    "domain": "nonexistdomain12345.com",
+    "status": "NXDOMAIN",
+    "message": "Domain does not exist"
+  }
+}

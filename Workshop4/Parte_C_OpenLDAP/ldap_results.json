@@ -1,0 +1,30 @@
+{
+  "search_results": [
+    {
+      "dn": "uid=francisco,ou=People,dc=example,dc=com",
+      "attributes": {
+        "userPassword": [
+          "password"
+        ],
+        "uid": [
+          "francisco"
+        ],
+        "cn": [
+          "Francisco Hidrobo"
+        ],
+        "objectClass": [
+          "top",
+          "person",
+          "organizationalPerson",
+          "inetOrgPerson"
+        ],
+        "sn": [
+          "Hidrobo"
+        ]
+      }
+    }
+  ],
+  "auth_test_valid": true,
+  "auth_test_invalid_pass": false,
+  "auth_test_nonexistent": false
+}

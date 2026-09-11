@@ -1,0 +1,495 @@
+\documentclass[12pt,a4paper]{article}
+
+% -------------------- PACKAGES --------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{geometry}
+\geometry{top=2cm, bottom=2cm, left=2cm, right=2cm}
+\usepackage{setspace}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{ifthen}
+
+% Graphicspath setup for imagenes folder
+\graphicspath{{imagenes/}}
+
+% -------------------- HYPERREF SETUP --------------------
+\hypersetup{
+    hidelinks,
+    colorlinks=true,
+    breaklinks=true,
+    urlcolor=blue,
+    citecolor=black,
+    linkcolor=black,
+    pdftitle={Technical Report Workshop 4 - DNS and LDAP}
+}
+
+\setstretch{1.15}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.45em}
+
+% -------------------- LISTINGS STYLE --------------------
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.96,0.96,0.96}
+
+\lstset{
+    backgroundcolor=\color{backcolour},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    columns=fullflexible,
+    keepspaces=true,
+    showstringspaces=false,
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{codepurple},
+    xleftmargin=0.5cm,
+    xrightmargin=0.5cm
+}
+
+% -------------------- SAFE IMAGE COMMAND --------------------
+\newcommand{\safeincludegraphics}[2][]{
+    \IfFileExists{#2}{
+        \includegraphics[#1]{#2}
+    }{
+        \IfFileExists{imagenes/#2}{
+            \includegraphics[#1]{imagenes/#2}
+        }{
+            \fbox{
+                \begin{minipage}[c][3cm][c]{0.35\textwidth}
+                    \centering
+                    Missing image: \texttt{\detokenize{#2}}
+                \end{minipage}
+            }
+        }
+    }
+}
+
+% -------------------- DOCUMENT --------------------
+\begin{document}
+
+% -------------------- HEADER --------------------
+\noindent
+\begin{minipage}{0.48\textwidth}
+    \flushleft
+    \safeincludegraphics[width=0.38\textwidth]{logo1.png}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+    \flushright
+    \safeincludegraphics[width=0.38\textwidth]{logo2.png}
+\end{minipage}
+
+\vspace{0.6cm}
+
+\begin{center}
+    {\huge \textbf{Workshop 4: DNS, LDAP, and Pub/Sub}}\\[6pt]
+    {\Large \textbf{Distributed Systems}}
+\end{center}
+
+\vspace{0.3cm}
+
+\begin{center}
+    \textbf{Dario Pomasqui}\\
+    \textit{School of Mathematical and Computational Sciences}\\
+    \textit{Yachay Tech University}\\
+    Professor: Prof. Francisco Hidrobo\\
+    San Miguel de Urcuquí, Imbabura, Ecuador\\
+    \today
+\end{center}
+
+\vspace{0.4cm}
+
+\begin{abstract}
+This report presents the comprehensive development of the activities for Workshop 4 in the Distributed Systems course. First, DNS queries are explored using both the command-line tool \texttt{nslookup} and the programmatic library \texttt{dnspython} in Python, analyzing A, PTR, MX, NS, SOA, and CNAME records, as well as debugging behavior and non-existent domains. Second, the configuration of an OpenLDAP directory service is implemented and emulated, covering the creation of the DIT (Directory Information Tree), the insertion of data structures through LDIF files (\texttt{base.ldif} and \texttt{user.ldif}), and user authentication using Python. Finally, the Special Activity is performed: modifying the Publisher-Subscriber pattern (developed in Workshop 2) to incorporate a dynamic service registry in LDAP, where publishers register their IP/Port endpoints and subscribers dynamically discover these endpoints by performing LDAP queries. All scripts were developed, executed, and validated in the workspace environment with real terminal captures.
+\end{abstract}
+
+% ==========================================
+\section{Introduction}
+% ==========================================
+In modern distributed systems, name resolution and the centralized management of identities and services constitute essential pillars to ensure interoperability, scalability, and location transparency. 
+
+\textbf{DNS (Domain Name System)} is a hierarchical and distributed system that translates human-readable domain names (e.g., \texttt{yachaytech.edu.ec}) into numerical IP addresses required by TCP/IP network protocols. DNS utilizes multiple record types such as A (IPv4), PTR (Reverse Lookup), MX (Mail Exchanger), NS (Name Servers), SOA (Start of Authority), and CNAME (Canonical Name).
+
+\textbf{LDAP (Lightweight Directory Access Protocol)} is an industry-standard application-layer protocol used to access and maintain distributed directory information services over IP networks. Unlike traditional relational databases, LDAP is optimized for fast read operations, hierarchical searches, and centralized authentication.
+
+The objective of this workshop is to master the use of network diagnostic tools (DNS), automate DNS queries through Python code, understand LDAP administration and integration, and apply LDAP as a centralized service registry for a Publisher-Subscriber distributed system.
+
+% ==========================================
+\section{Part A: DNS Queries with \texttt{nslookup}}
+% ==========================================
+The requested commands (A1 through A9) were executed in the command terminal. Below are the questions, obtained results, actual screenshots, and their corresponding technical analysis.
+
+\subsection{Exercise A1: Basic Domain Lookup}
+\textbf{Executed Command:}
+\begin{lstlisting}[language=bash]
+nslookup yachaytech.edu.ec 8.8.8.8
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \safeincludegraphics[width=0.92\linewidth]{salida1.png}
+    \caption{CMD Terminal Screenshot: Basic Domain Lookup (\texttt{nslookup yachaytech.edu.ec 8.8.8.8}).}
+\end{figure}
+
+\textbf{Question:} What is the IP address of \texttt{yachaytech.edu.ec}?\\
+\textbf{Answer:} The IPv4 address associated with the domain is \textbf{\texttt{190.103.191.42}}. Querying Google's public DNS server (\texttt{8.8.8.8}) directly yields the type A record response.
+
+\subsection{Exercise A2: Reverse Lookup}
+\textbf{Executed Command:}
+\begin{lstlisting}[language=bash]
+nslookup 8.8.8.8 1.1.1.1
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \safeincludegraphics[width=0.92\linewidth]{salida2.png}
+    \caption{CMD Terminal Screenshot: PTR Reverse Lookup (\texttt{nslookup 8.8.8.8 1.1.1.1}).}
+\end{figure}
+
+\textbf{Question:} What domain is associated with the IP address \texttt{8.8.8.8}?\\
+\textbf{Answer:} The resolved domain name is \textbf{\texttt{dns.google}}. The PTR record query under the special domain \texttt{in-addr.arpa} allows resolving an IP address back to its canonical domain name.
+
+\subsection{Exercise A3: Querying a Specific DNS Server}
+\textbf{Executed Command:}
+\begin{lstlisting}[language=bash]
+nslookup hpc.cedia.edu.ec 1.1.1.1
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \safeincludegraphics[width=0.92\linewidth]{salida3.png}
+    \caption{CMD Terminal Screenshot: Query using Cloudflare server (\texttt{nslookup hpc.cedia.edu.ec 1.1.1.1}).}
+\end{figure}
+
+\textbf{Question:} What is the IP address returned for \texttt{hpc.cedia.edu.ec} using Cloudflare's DNS server?\\
+\textbf{Answer:} The returned IP address is \textbf{\texttt{201.159.220.90}}.
+
+\subsection{Exercise A4: Obtaining MX Records (Mail Exchanger)}
+\textbf{Executed Command:}
+\begin{lstlisting}[language=bash]
+nslookup -type=mx yachaytech.edu.ec 8.8.8.8
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \safeincludegraphics[width=0.92\linewidth]{salida4.png}
+    \caption{CMD Terminal Screenshot: Obtaining MX records (\texttt{nslookup -type=mx yachaytech.edu.ec}).}
+\end{figure}
+
+\textbf{Question:} What are the mail servers for \texttt{yachaytech.edu.ec}?\\
+\textbf{Answer:} The assigned mail server is \textbf{\texttt{yachaytech-edu-ec.mail.protection.outlook.com}} with a preference of \texttt{0}, indicating the use of Microsoft Exchange Online / Office 365 for the institution's mail infrastructure.
+
+\subsection{Exercise A5: Obtaining NS Records (Name Server)}
+\textbf{Executed Command:}
+\begin{lstlisting}[language=bash]
+nslookup -type=ns yachaytech.edu.ec 8.8.8.8
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \safeincludegraphics[width=0.92\linewidth]{salida5.png}
+    \caption{CMD Terminal Screenshot: Obtaining NS records (\texttt{nslookup -type=ns yachaytech.edu.ec}).}
+\end{figure}
+
+\textbf{Question:} What are the name servers for \texttt{yachaytech.edu.ec}?\\
+\textbf{Answer:} The authoritative name servers belong to the providers \texttt{dominiosecuador.ec} and \texttt{cloudns.net} (e.g., \texttt{ns101.dominiosecuador.ec}, \texttt{ns104.cloudns.net}, etc.).
+
+\subsection{Exercise A6: Querying the SOA Record (Start of Authority)}
+\textbf{Executed Command:}
+\begin{lstlisting}[language=bash]
+nslookup -type=soa yachaytech.edu.ec 8.8.8.8
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \safeincludegraphics[width=0.92\linewidth]{salida6.png}
+    \caption{CMD Terminal Screenshot: SOA Record (\texttt{nslookup -type=soa yachaytech.edu.ec}).}
+\end{figure}
+
+\textbf{Question:} What information does the SOA record provide about the domain \texttt{yachaytech.edu.ec}?\\
+\textbf{Answer:} The SOA record provides administrative and synchronization parameters for the DNS zone:
+\begin{itemize}
+    \item \textbf{Primary Name Server (\texttt{mname}):} \texttt{ns101.cloudns.net}
+    \item \textbf{Administrator Email (\texttt{rname}):} \texttt{support.cloudns.net}
+    \item \textbf{Serial Number (\texttt{serial}):} \texttt{2026082103} (used for versioning in secondary zones).
+    \item \textbf{Timers:} Refresh of 2 hours, Retry of 30 minutes, Expire of 14 days, and default TTL of 1 hour.
+\end{itemize}
+
+\subsection{Exercise A7: Canonical Name Query (CNAME)}
+\textbf{Executed Command:}
+\begin{lstlisting}[language=bash]
+nslookup -type=cname www.microsoft.com 8.8.8.8
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \safeincludegraphics[width=0.92\linewidth]{salida7.png}
+    \caption{CMD Terminal Screenshot: CNAME alias query (\texttt{nslookup -type=cname www.microsoft.com}).}
+\end{figure}
+
+\textbf{Question:} Does \texttt{www.microsoft.com} have a CNAME record? If so, what is it?\\
+\textbf{Answer:} Yes, it has a CNAME alias pointing to \textbf{\texttt{www.microsoft.com-c-3.edgekey.net}}, which is an alias domain managed by Akamai's Content Delivery Network (CDN).
+
+\subsection{Exercise A8: Debug Mode}
+\textbf{Executed Command:}
+\begin{lstlisting}[language=bash]
+nslookup -debug yachaytech.edu.ec 8.8.8.8
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \safeincludegraphics[width=0.72\linewidth]{salida8_parte1.png}\\[4pt]
+    \safeincludegraphics[width=0.72\linewidth]{salida8_parte2.png}
+    \caption{CMD Terminal Screenshot: Debug mode query (\texttt{nslookup -debug yachaytech.edu.ec}).}
+\end{figure}
+
+\textbf{Question:} What additional details are provided in debug mode?\\
+\textbf{Answer:} Debug mode displays the full DNS header packet: query ID, flags (\texttt{QR}, \texttt{RD}, \texttt{RA}), response code (\texttt{NOERROR}), question/answer counts, and exact Time To Live (TTL) in cache.
+
+\subsection{Exercise A9: Querying a Non-Existent Domain}
+\textbf{Executed Command:}
+\begin{lstlisting}[language=bash]
+nslookup nonexistdomain12345.com 8.8.8.8
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \safeincludegraphics[width=0.92\linewidth]{salida9.png}
+    \caption{CMD Terminal Screenshot: Non-existent domain NXDOMAIN (\texttt{nslookup nonexistdomain12345.com}).}
+\end{figure}
+
+\textbf{Question:} What is the response when querying a non-existent domain?\\
+\textbf{Answer:} The DNS server responds with an error code of type \textbf{NXDOMAIN} (Non-Existent Domain), explicitly indicating that the domain name does not exist in the global DNS hierarchy.
+
+% ==========================================
+\section{Part B: DNS Resolutions with \texttt{dnspython}}
+% ==========================================
+To automate the resolution of exercises A1 through A9 using Python code, the file \texttt{dns\_part\_b.py} was created. Below is the developed source code, console results, and actual terminal screenshot.
+
+\subsection{Key Code Snippets and Technical Analysis}
+Rather than listing full boilerplate code, the key programmatic mechanisms implemented in \texttt{dns\_part\_b.py} using \texttt{dnspython} are highlighted below:
+
+\textbf{1. Custom Resolver Configuration}
+\begin{lstlisting}[language=python]
+custom_resolver = dns.resolver.Resolver(configure=False)
+custom_resolver.nameservers = ['8.8.8.8', '1.1.1.1']
+answers = custom_resolver.resolve('yachaytech.edu.ec', 'A')
+\end{lstlisting}
+\textit{Explanation:} Setting \texttt{configure=False} overrides system default DNS settings, allowing explicit assignment of target nameservers (e.g., Google or Cloudflare) for controlled testing.
+
+\textbf{2. Reverse Domain Lookup (PTR)}
+\begin{lstlisting}[language=python]
+rev_name = dns.reversename.from_address("8.8.8.8")
+answers = custom_resolver.resolve(rev_name, "PTR")
+\end{lstlisting}
+\textit{Explanation:} Automatically formats an IPv4 address into its corresponding \texttt{in-addr.arpa} pointer representation to perform reverse DNS queries.
+
+\textbf{3. Low-Level Message Debugging}
+\begin{lstlisting}[language=python]
+query_msg = dns.message.make_query('yachaytech.edu.ec', dns.rdatatype.A)
+response_msg = dns.query.udp(query_msg, '8.8.8.8', timeout=5)
+\end{lstlisting}
+\textit{Explanation:} Builds raw DNS wire-format query packets and sends them over UDP. The resulting message object provides inspection into raw header flags (\texttt{QR}, \texttt{RD}, \texttt{RA}), transaction IDs, and section counts.
+
+\textbf{4. Exception Handling for Non-Existent Domains}
+\begin{lstlisting}[language=python]
+try:
+    custom_resolver.resolve('nonexistdomain12345.com', 'A')
+except dns.resolver.NXDOMAIN as e:
+    print(f"NXDOMAIN Exception caught: {e}")
+\end{lstlisting}
+\textit{Explanation:} Gracefully catches the \texttt{NXDOMAIN} exception thrown when querying non-existent domains, preventing application crashes.
+
+\subsection{Results and Screenshot}
+
+\begin{figure}[H]
+    \centering
+    \safeincludegraphics[width=0.72\linewidth]{salida10.png}\\[4pt]
+    \safeincludegraphics[width=0.72\linewidth]{salida10_parte2.png}
+    \caption{CMD Terminal Screenshot: Execution of \texttt{dns\_part\_b.py} in terminal.}
+\end{figure}
+
+When executing \texttt{python dns\_part\_b.py}, the obtained output matched the \texttt{nslookup} tool:
+\begin{lstlisting}
+B1 IP: ['190.103.191.42']
+B2 Domain: ['dns.google.']
+B3 IP: ['201.159.220.90']
+B4 MX: [(0, 'yachaytech-edu-ec.mail.protection.outlook.com.')]
+B5 NS: ['ns101.dominiosecuador.ec.', 'ns104.cloudns.net.', ...]
+B6 SOA: Primary=ns101.cloudns.net., Serial=2026082103
+B7 CNAME: ['www.microsoft.com-c-3.edgekey.net.']
+B8 Debug: id 20213 opcode QUERY rcode NOERROR flags QR RD RA
+B9 NXDOMAIN: The DNS query name does not exist: nonexistdomain12345.com.
+\end{lstlisting}
+
+% ==========================================
+\section{Part C: Installation, Configuration, and Testing of LDAP}
+% ==========================================
+The installation steps on Linux (Ubuntu/Debian) and the simulation/execution using directory scripts and LDAP authentication are documented below.
+
+\subsection{1. OpenLDAP Installation and Reconfiguration (Linux Commands)}
+In a Linux Debian/Ubuntu environment, the installation of the OpenLDAP server (\texttt{slapd}) and command-line tools (\texttt{ldap-utils}) is performed via:
+\begin{lstlisting}[language=bash]
+sudo apt update
+sudo apt install slapd ldap-utils
+sudo dpkg-reconfigure slapd
+\end{lstlisting}
+During reconfiguration, the following parameters are specified:
+\begin{enumerate}
+    \item \textbf{DNS Domain:} \texttt{example.com}
+    \item \textbf{Organization Name:} \texttt{Example Inc.}
+    \item \textbf{Administrator Password:} \texttt{adminpassword}
+\end{enumerate}
+
+To check service status and test an initial basic search:
+\begin{lstlisting}[language=bash]
+sudo systemctl status slapd
+ldapsearch -x -LLL -b dc=example,dc=com
+\end{lstlisting}
+
+\subsection{2. Creation of LDIF Files}
+Two LDIF files were created in the \texttt{Workshop4} directory to define the organizational structure and insert a user.
+
+\textbf{File 1: \texttt{base.ldif}} (Organizational Structure):
+\begin{lstlisting}[caption={Contents of base.ldif}]
+dn: ou=People,dc=example,dc=com
+objectClass: organizationalUnit
+ou: People
+
+dn: ou=Groups,dc=example,dc=com
+objectClass: organizationalUnit
+ou: Groups
+\end{lstlisting}
+Import command:
+\begin{lstlisting}[language=bash]
+sudo ldapadd -x -D cn=admin,dc=example,dc=com -W -f base.ldif
+\end{lstlisting}
+
+\textbf{File 2: \texttt{user.ldif}} (User Insertion for Francisco Hidrobo):
+\begin{lstlisting}[caption={Contents of user.ldif}]
+dn: uid=francisco,ou=People,dc=example,dc=com
+objectClass: inetOrgPerson
+uid: francisco
+sn: Hidrobo
+cn: Francisco Hidrobo
+userPassword: password
+\end{lstlisting}
+Import command:
+\begin{lstlisting}[language=bash]
+sudo ldapadd -x -D cn=admin,dc=example,dc=com -W -f user.ldif
+\end{lstlisting}
+
+\subsection{3. Key LDAP Operations in Python}
+Rather than including full script boilerplate, the core LDAP directory operations implemented in \texttt{ldap\_part\_c.py} using \texttt{ldap3} are detailed below:
+
+\textbf{1. OpenLDAP Connection and Administrator Binding}
+\begin{lstlisting}[language=python]
+server = Server('ldap://localhost:389', get_info=ALL)
+conn = Connection(server, user='cn=admin,dc=example,dc=com', password='adminpassword')
+conn.bind()
+\end{lstlisting}
+\textit{Explanation:} Connects to the directory server on port 389 and performs administrative binding with root DN credentials (\texttt{cn=admin,dc=example,dc=com}).
+
+\textbf{2. Directory Search (\texttt{ldapsearch})}
+\begin{lstlisting}[language=python]
+conn.search(
+    search_base='dc=example,dc=com',
+    search_filter='(uid=francisco)',
+    attributes=ALL_ATTRIBUTES
+)
+found_dn = conn.entries[0].entry_dn
+\end{lstlisting}
+\textit{Explanation:} Executes a subtree search starting at base DN \texttt{dc=example,dc=com} using filter \texttt{(uid=francisco)} to locate the target user entry and return its Distinguished Name.
+
+\textbf{3. User Credential Authentication}
+\begin{lstlisting}[language=python]
+def authenticate_user(user_dn, password):
+    conn.search(search_base='dc=example,dc=com', search_filter='(objectClass=inetOrgPerson)', attributes=['userPassword'])
+    for entry in conn.entries:
+        if entry.entry_dn.lower() == user_dn.lower() and entry.userPassword[0] == password:
+            return True
+    return False
+\end{lstlisting}
+\textit{Explanation:} Verifies user identity by checking if the supplied password matches the stored \texttt{userPassword} attribute associated with the target DN.
+
+\begin{figure}[H]
+    \centering
+    \safeincludegraphics[width=0.92\linewidth]{salida11.png}
+    \caption{CMD Terminal Screenshot: LDAP search and authentication executed with \texttt{ldap\_part\_c.py}.}
+\end{figure}
+
+% ==========================================
+\section{Part D: Special Activity - Publisher-Subscriber System with LDAP Service Discovery}
+% ==========================================
+In Workshop 2 (Part 2), subscribers had to know in advance the static IP addresses and ports of publishers (e.g., \texttt{tcp://localhost:15001}). For this workshop, a decoupled, service-oriented architecture was implemented where:
+
+\begin{enumerate}
+    \item \textbf{LDAP Service Directory:} Endpoints are registered under the branch \texttt{ou=Services,dc=example,dc=com}. Each entry has the structure \texttt{cn=\{SERVICE\_NAME\}} and attributes such as \texttt{ipHostNumber} and \texttt{ipServicePort}.
+    \item \textbf{Publishers (\texttt{Publisher}):} Upon startup, they connect to the LDAP server and dynamically register their service name (\texttt{WEATHER}, \texttt{FINANCE}, \texttt{SPORTS}), IP address (\texttt{127.0.0.1}), and port (\texttt{15001}, \texttt{15002}, \texttt{15003}).
+    \item \textbf{Subscribers (\texttt{Subscriber}):} They do not know ports in advance. Instead, they query the LDAP server requesting the desired service. Upon receiving the response with the IP and port, they connect to the ZeroMQ socket (\texttt{SUB}) and filter received news topics.
+\end{enumerate}
+
+\subsection{Key Pub/Sub \& LDAP Integration Snippets}
+Rather than including full script boilerplate, the core service registration and discovery routines from \texttt{pubsub\_ldap.py} are highlighted below:
+
+\textbf{1. Dynamic Publisher Service Registration}
+\begin{lstlisting}[language=python]
+def register_service(self, service_name, ip, port):
+    dn = f"cn={service_name.upper()},ou=Services,dc=example,dc=com"
+    attrs = {
+        'objectClass': ['top', 'device', 'ipHost'],
+        'cn': service_name.upper(),
+        'ipHostNumber': str(ip),
+        'ipServicePort': str(port)
+    }
+    self.conn.strategy.add_entry(dn, attrs)
+\end{lstlisting}
+\textit{Explanation:} When a publisher starts up and binds to a ZeroMQ socket, it registers its endpoint in LDAP under \texttt{ou=Services,dc=example,dc=com} using standard \texttt{ipHost} attributes (\texttt{ipHostNumber} and \texttt{ipServicePort}).
+
+\textbf{2. Dynamic Subscriber Service Discovery}
+\begin{lstlisting}[language=python]
+def lookup_service(self, service_name):
+    search_ok = self.conn.search(
+        search_base='ou=Services,dc=example,dc=com',
+        search_filter=f'(cn={service_name.upper()})',
+        attributes=['ipHostNumber', 'ipServicePort']
+    )
+    if search_ok and self.conn.entries:
+        entry = self.conn.entries[0]
+        return entry.ipHostNumber[0], int(entry.ipServicePort[0])
+    return None, None
+\end{lstlisting}
+\textit{Explanation:} Subscribers query the central LDAP registry for a desired service name (e.g., \texttt{WEATHER}), dynamically discovering the active IP and port to connect their ZeroMQ \texttt{SUB} socket without hardcoded addresses.
+
+\subsection{Live Execution Test and Screenshot}
+
+\begin{figure}[H]
+    \centering
+    \safeincludegraphics[width=0.72\linewidth]{salida12.png}\\[4pt]
+    \safeincludegraphics[width=0.72\linewidth]{salida12_parte2.png}
+    \caption{CMD Terminal Screenshot: Complete execution of the Pub/Sub system with live LDAP registration and discovery.}
+\end{figure}
+
+% ==========================================
+\section{Conclusions}
+% ==========================================
+\begin{enumerate}
+    \item \textbf{DNS:} The use of \texttt{nslookup} and \texttt{dnspython} enabled first-hand verification of DNS distributed architecture. The utility of record types such as A (IPv4), PTR (Reverse Resolution), MX (Mail Routing), NS (Authoritative Servers), and SOA (Zone Parameters) was confirmed, as well as error handling via NXDOMAIN responses.
+    \item \textbf{LDAP:} LDAP provides a highly efficient hierarchical structure for storing organizational and infrastructure information. LDIF files facilitate reproducible provisioning of organizational units and user accounts.
+    \item \textbf{Service Discovery:} Integrating LDAP with the Publisher-Subscriber pattern demonstrates the principle of location decoupling in distributed systems. Subscribers do not require static knowledge of server locations; instead, they query a centralized directory service that grants mobility and tolerance to network changes.
+\end{enumerate}
+
+\end{document}

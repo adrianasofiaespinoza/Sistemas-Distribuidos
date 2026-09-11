@@ -1,0 +1,57 @@
+{
+  "A1_default": {
+    "cmd": "nslookup yachaytech.edu.ec",
+    "output": "Server:  UnKnown\nAddress:  fe80::1\n\n*** UnKnown can't find yachaytech.edu.ec: Query refused",
+    "returncode": 0
+  },
+  "A1_google": {
+    "cmd": "nslookup yachaytech.edu.ec 8.8.8.8",
+    "output": "Server:  dns.google\nAddress:  8.8.8.8\n\nName:    yachaytech.edu.ec\nAddress:  190.103.191.42\n\nNon-authoritative answer:",
+    "returncode": 0
+  },
+  "A2_default": {
+    "cmd": "nslookup 8.8.8.8",
+    "output": "Server:  UnKnown\nAddress:  fe80::1\n\n*** UnKnown can't find 8.8.8.8: Query refused",
+    "returncode": 0
+  },
+  "A2_cloudflare": {
+    "cmd": "nslookup 8.8.8.8 1.1.1.1",
+    "output": "Server:  one.one.one.one\nAddress:  1.1.1.1\n\nName:    dns.google\nAddress:  8.8.8.8",
+    "returncode": 0
+  },
+  "A3_cloudflare": {
+    "cmd": "nslookup hpc.cedia.edu.ec 1.1.1.1",
+    "output": "Server:  one.one.one.one\nAddress:  1.1.1.1\n\nName:    hpc.cedia.edu.ec\nAddress:  201.159.220.90\n\nNon-authoritative answer:",
+    "returncode": 0
+  },
+  "A4_mx": {
+    "cmd": "nslookup -type=mx yachaytech.edu.ec 8.8.8.8",
+    "output": "Server:  dns.google\nAddress:  8.8.8.8\n\nyachaytech.edu.ec\tMX preference = 0, mail exchanger = yachaytech-edu-ec.mail.protection.outlook.com\nNon-authoritative answer:",
+    "returncode": 0
+  },
+  "A5_ns": {
+    "cmd": "nslookup -type=ns yachaytech.edu.ec 8.8.8.8",
+    "output": "Server:  dns.google\nAddress:  8.8.8.8\n\nyachaytech.edu.ec\tnameserver = ns101.dominiosecuador.ec\nyachaytech.edu.ec\tnameserver = pns103.dominiosecuador.ec\nyachaytech.edu.ec\tnameserver = ns104.cloudns.net\nyachaytech.edu.ec\tnameserver = pns102.dominiosecuador.ec\nyachaytech.edu.ec\tnameserver = pns104.cloudns.net\nyachaytech.edu.ec\tnameserver = pns101.dominiosecuador.ec\nyachaytech.edu.ec\tnameserver = ns102.dominiosecuador.ec\nNon-authoritative answer:",
+    "returncode": 0
+  },
+  "A6_soa": {
+    "cmd": "nslookup -type=soa yachaytech.edu.ec 8.8.8.8",
+    "output": "Server:  dns.google\nAddress:  8.8.8.8\n\nyachaytech.edu.ec\n\tprimary name server = ns101.cloudns.net\n\tresponsible mail addr = support.cloudns.net\n\tserial  = 2026082103\n\trefresh = 7200 (2 hours)\n\tretry   = 1800 (30 mins)\n\texpire  = 1209600 (14 days)\n\tdefault TTL = 3600 (1 hour)\nNon-authoritative answer:",
+    "returncode": 0
+  },
+  "A7_cname": {
+    "cmd": "nslookup -type=cname www.microsoft.com 8.8.8.8",
+    "output": "Server:  dns.google\nAddress:  8.8.8.8\n\nwww.microsoft.com\tcanonical name = www.microsoft.com-c-3.edgekey.net\nNon-authoritative answer:",
+    "returncode": 0
+  },
+  "A8_debug": {
+    "cmd": "nslookup -debug yachaytech.edu.ec 8.8.8.8",
+    "output": "------------\nGot answer:\n    HEADER:\n\topcode = QUERY, id = 1, rcode = NOERROR\n\theader flags:  response, want recursion, recursion avail.\n\tquestions = 1,  answers = 1,  authority records = 0,  additional = 0\n\n    QUESTIONS:\n\t8.8.8.8.in-addr.arpa, type = PTR, class = IN\n    ANSWERS:\n    ->  8.8.8.8.in-addr.arpa\n\tname = dns.google\n\tttl = 4062 (1 hour 7 mins 42 secs)\n\n------------\nServer:  dns.google\nAddress:  8.8.8.8\n\n------------\nGot answer:\n    HEADER:\n\topcode = QUERY, id = 2, rcode = NOERROR\n\theader flags:  response, want recursion, recursion avail.\n\tquestions = 1,  answers = 1,  authority records = 0,  additional = 0\n\n    QUESTIONS:\n\tyachaytech.edu.ec, type = A, class = IN\n    ANSWERS:\n    ->  yachaytech.edu.ec\n\tinternet address = 190.103.191.42\n\tttl = 3598 (59 mins 58 secs)\n\n------------\n------------\nGot answer:\n    HEADER:\n\topcode = QUERY, id = 3, rcode = NOERROR\n\theader flags:  response, want recursion, recursion avail.\n\tquestions = 1,  answers = 0,  authority records = 1,  additional = 0\n\n    QUESTIONS:\n\tyachaytech.edu.ec, type = AAAA, class = IN\n    AUTHORITY RECORDS:\n    ->  yachaytech.edu.ec\n\tttl = 1800 (30 mins)\n\tprimary name server = ns101.cloudns.net\n\tresponsible mail addr = support.cloudns.net\n\tserial  = 2026082103\n\trefresh = 7200 (2 hours)\n\tretry   = 1800 (30 mins)\n\texpire  = 1209600 (14 days)\n\tdefault TTL = 3600 (1 hour)\n\n------------\nName:    yachaytech.edu.ec\nAddress:  190.103.191.42\n\nNon-authoritative answer:",
+    "returncode": 0
+  },
+  "A9_nonexistent": {
+    "cmd": "nslookup nonexistdomain12345.com 8.8.8.8",
+    "output": "Server:  dns.google\nAddress:  8.8.8.8\n\n*** dns.google can't find nonexistdomain12345.com: Non-existent domain",
+    "returncode": 0
+  }
+}

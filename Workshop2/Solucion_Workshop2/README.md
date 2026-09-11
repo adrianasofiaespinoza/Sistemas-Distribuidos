@@ -5,7 +5,7 @@
 **Asignatura:** Sistemas Distribuidos  
 **Docente:** Francisco Hidrobo, Ph.D.  
 **Fecha:** Septiembre 2026  
-**Autores:** Dario Pomasqui & Adriana Sofia Espinoza Chicaiza  
+**Autor:** Dario Pomasqui  
 **Repositorio GitHub:** [adrianasofiaespinoza/Sistemas-Distribuidos/Workshop2](https://github.com/adrianasofiaespinoza/Sistemas-Distribuidos/tree/main/Workshop2)
 
 ---

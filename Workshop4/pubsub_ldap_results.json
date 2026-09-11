@@ -1,0 +1,85 @@
+{
+  "publishers": [
+    [
+      "WEATHER",
+      15001
+    ],
+    [
+      "FINANCE",
+      15002
+    ],
+    [
+      "SPORTS",
+      15003
+    ]
+  ],
+  "subscribed_services": [
+    "WEATHER",
+    "FINANCE",
+    "SPORTS"
+  ],
+  "total_received": 19,
+  "received_messages": [
+    "WEATHER [21:33:26] #1 Guayaquil: 28.0C, Soleado",
+    "FINANCE [21:33:26] #1 AAPL: 225.50",
+    "SPORTS [21:33:26] #1 LigaPro: LDU 2 - 1 BSC",
+    "WEATHER [21:33:27] #2 Guayaquil: 28.0C, Soleado",
+    "FINANCE [21:33:27] #2 USD/EUR: 0.92",
+    "SPORTS [21:33:27] #2 Champions: Real Madrid 3 - 1 Bayern",
+    "WEATHER [21:33:28] #3 Guayaquil: 28.0C, Soleado",
+    "FINANCE [21:33:28] #3 AAPL: 225.50",
+    "SPORTS [21:33:28] #3 LigaPro: LDU 2 - 1 BSC",
+    "WEATHER [21:33:29] #4 Quito: 18.5C, Lluvia",
+    "FINANCE [21:33:29] #4 BTC/USD: 64500.0",
+    "SPORTS [21:33:29] #4 LigaPro: LDU 2 - 1 BSC",
+    "WEATHER [21:33:30] #5 Quito: 18.5C, Lluvia",
+    "FINANCE [21:33:30] #5 USD/EUR: 0.92",
+    "SPORTS [21:33:30] #5 Champions: Real Madrid 3 - 1 Bayern",
+    "WEATHER [21:33:31] #6 Guayaquil: 28.0C, Soleado",
+    "FINANCE [21:33:31] #6 AAPL: 225.50",
+    "SPORTS [21:33:31] #6 LigaPro: LDU 2 - 1 BSC",
+    "WEATHER [21:33:32] #7 Guayaquil: 28.0C, Soleado"
+  ],
+  "logs": [
+    "[PUB-WEATHER] Sent: WEATHER [21:33:26] #1 Guayaquil: 28.0C, Soleado",
+    "[Subscriber-LDAP-Client RECIBIDO] WEATHER [21:33:26] #1 Guayaquil: 28.0C, Soleado",
+    "[PUB-FINANCE] Sent: FINANCE [21:33:26] #1 AAPL: 225.50",
+    "[Subscriber-LDAP-Client RECIBIDO] FINANCE [21:33:26] #1 AAPL: 225.50",
+    "[PUB-SPORTS] Sent: SPORTS [21:33:26] #1 LigaPro: LDU 2 - 1 BSC",
+    "[Subscriber-LDAP-Client RECIBIDO] SPORTS [21:33:26] #1 LigaPro: LDU 2 - 1 BSC",
+    "[PUB-WEATHER] Sent: WEATHER [21:33:27] #2 Guayaquil: 28.0C, Soleado",
+    "[Subscriber-LDAP-Client RECIBIDO] WEATHER [21:33:27] #2 Guayaquil: 28.0C, Soleado",
+    "[PUB-FINANCE] Sent: FINANCE [21:33:27] #2 USD/EUR: 0.92",
+    "[Subscriber-LDAP-Client RECIBIDO] FINANCE [21:33:27] #2 USD/EUR: 0.92",
+    "[PUB-SPORTS] Sent: SPORTS [21:33:27] #2 Champions: Real Madrid 3 - 1 Bayern",
+    "[Subscriber-LDAP-Client RECIBIDO] SPORTS [21:33:27] #2 Champions: Real Madrid 3 - 1 Bayern",
+    "[PUB-WEATHER] Sent: WEATHER [21:33:28] #3 Guayaquil: 28.0C, Soleado",
+    "[Subscriber-LDAP-Client RECIBIDO] WEATHER [21:33:28] #3 Guayaquil: 28.0C, Soleado",
+    "[PUB-FINANCE] Sent: FINANCE [21:33:28] #3 AAPL: 225.50",
+    "[Subscriber-LDAP-Client RECIBIDO] FINANCE [21:33:28] #3 AAPL: 225.50",
+    "[PUB-SPORTS] Sent: SPORTS [21:33:28] #3 LigaPro: LDU 2 - 1 BSC",
+    "[Subscriber-LDAP-Client RECIBIDO] SPORTS [21:33:28] #3 LigaPro: LDU 2 - 1 BSC",
+    "[Subscriber-LDAP-Client RECIBIDO] WEATHER [21:33:29] #4 Quito: 18.5C, Lluvia",
+    "[PUB-WEATHER] Sent: WEATHER [21:33:29] #4 Quito: 18.5C, Lluvia",
+    "[PUB-FINANCE] Sent: FINANCE [21:33:29] #4 BTC/USD: 64500.0",
+    "[Subscriber-LDAP-Client RECIBIDO] FINANCE [21:33:29] #4 BTC/USD: 64500.0",
+    "[PUB-SPORTS] Sent: SPORTS [21:33:29] #4 LigaPro: LDU 2 - 1 BSC",
+    "[Subscriber-LDAP-Client RECIBIDO] SPORTS [21:33:29] #4 LigaPro: LDU 2 - 1 BSC",
+    "[PUB-WEATHER] Sent: WEATHER [21:33:30] #5 Quito: 18.5C, Lluvia",
+    "[Subscriber-LDAP-Client RECIBIDO] WEATHER [21:33:30] #5 Quito: 18.5C, Lluvia",
+    "[PUB-FINANCE] Sent: FINANCE [21:33:30] #5 USD/EUR: 0.92",
+    "[Subscriber-LDAP-Client RECIBIDO] FINANCE [21:33:30] #5 USD/EUR: 0.92",
+    "[PUB-SPORTS] Sent: SPORTS [21:33:30] #5 Champions: Real Madrid 3 - 1 Bayern",
+    "[Subscriber-LDAP-Client RECIBIDO] SPORTS [21:33:30] #5 Champions: Real Madrid 3 - 1 Bayern",
+    "[PUB-WEATHER] Sent: WEATHER [21:33:31] #6 Guayaquil: 28.0C, Soleado",
+    "[Subscriber-LDAP-Client RECIBIDO] WEATHER [21:33:31] #6 Guayaquil: 28.0C, Soleado",
+    "[PUB-FINANCE] Sent: FINANCE [21:33:31] #6 AAPL: 225.50",
+    "[Subscriber-LDAP-Client RECIBIDO] FINANCE [21:33:31] #6 AAPL: 225.50",
+    "[PUB-SPORTS] Sent: SPORTS [21:33:31] #6 LigaPro: LDU 2 - 1 BSC",
+    "[Subscriber-LDAP-Client RECIBIDO] SPORTS [21:33:31] #6 LigaPro: LDU 2 - 1 BSC",
+    "[PUB-WEATHER] Sent: WEATHER [21:33:32] #7 Guayaquil: 28.0C, Soleado",
+    "[Subscriber-LDAP-Client RECIBIDO] WEATHER [21:33:32] #7 Guayaquil: 28.0C, Soleado",
+    "[PUB-FINANCE] Sent: FINANCE [21:33:32] #7 USD/EUR: 0.92",
+    "[PUB-SPORTS] Sent: SPORTS [21:33:32] #7 LigaPro: LDU 2 - 1 BSC"
+  ]
+}
