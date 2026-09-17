@@ -3,6 +3,7 @@
 **Course:** Distributed Systems (Sistemas Distribuidos)  
 **Author:** Dario Pomasqui  
 **Institution:** Universidad Yachay Tech  
+**GitHub Repository:** [adrianasofiaespinoza/Sistemas-Distribuidos/Workshop4](https://github.com/adrianasofiaespinoza/Sistemas-Distribuidos/tree/main/Workshop4)  
 **Date:** September 2026  
 
 ---

@@ -1,6 +1,0 @@
-dn: uid=francisco,ou=People,dc=example,dc=com
-objectClass: inetOrgPerson
-uid: francisco
-sn: Hidrobo
-cn: Francisco Hidrobo
-userPassword: password
