@@ -1,0 +1,27 @@
+\babel@toc {english}{}\relax 
+\contentsline {section}{\numberline {1}Docker Topology -- Activity 1}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Infrastructure Overview}{2}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}docker-compose.yml (key excerpts)}{2}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Verification}{2}{subsection.1.3}%
+\contentsline {section}{\numberline {2}Primary--Replica Replication -- Activity 2}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Configuration Steps}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Replication Status Evidence}{3}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Data Replication Test}{3}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Discussion Question}{4}{subsection.2.4}%
+\contentsline {section}{\numberline {3}Horizontal Sharding -- Activity 3}{4}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Sharding Rule}{4}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Schema Creation}{4}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Data on Each Fragment}{4}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Reconstructed Logical Result}{5}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Vertical Sharding Challenge}{5}{subsection.3.5}%
+\contentsline {section}{\numberline {4}Lost Update and Locking -- Activity 4}{6}{section.4}%
+\contentsline {subsection}{\numberline {4.1}4.1 -- Reproducing the Lost Update}{6}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}4.2 -- Fix with SELECT \ldots FOR UPDATE}{6}{subsection.4.2}%
+\contentsline {section}{\numberline {5}Read-After-Write Consistency -- Activity 5}{7}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Asynchronous Read}{7}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}GTID-Based Monotonic Read}{7}{subsection.5.2}%
+\contentsline {section}{\numberline {6}Deadlock and Prevention -- Activity 6}{8}{section.6}%
+\contentsline {subsection}{\numberline {6.1}6.1 -- Reproducing the Deadlock}{8}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}6.2 -- Prevention with Consistent Locking Order}{8}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Blocking vs.\ Deadlock}{9}{subsection.6.3}%
+\contentsline {section}{\numberline {7}Discussion}{9}{section.7}%

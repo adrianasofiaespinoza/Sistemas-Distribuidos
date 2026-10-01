@@ -1,0 +1,575 @@
+﻿\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{parskip}
+\usepackage{mdframed}
+\usepackage{enumitem}
+\usepackage{titlesec}
+
+\geometry{margin=2.5cm}
+
+% Colors
+\definecolor{codeblue}{RGB}{0,100,180}
+\definecolor{codegray}{RGB}{245,245,245}
+\definecolor{codegreen}{RGB}{0,128,0}
+\definecolor{codepurple}{RGB}{128,0,128}
+\definecolor{codered}{RGB}{180,0,0}
+\definecolor{primaryblue}{RGB}{26,86,219}
+\definecolor{lightblue}{RGB}{235,245,255}
+
+% Listings style
+\lstdefinestyle{sqlstyle}{
+  language=SQL,
+  backgroundcolor=\color{codegray},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{codeblue}\bfseries,
+  commentstyle=\color{codegreen}\itshape,
+  stringstyle=\color{codepurple},
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{gray!40},
+  numbers=none,
+  captionpos=b,
+  showstringspaces=false,
+  tabsize=2
+}
+
+\lstdefinestyle{bashstyle}{
+  language=bash,
+  backgroundcolor=\color{black!90},
+  basicstyle=\ttfamily\small\color{white},
+  keywordstyle=\color{yellow},
+  commentstyle=\color{green!60},
+  stringstyle=\color{orange},
+  breaklines=true,
+  frame=single,
+  numbers=none,
+  captionpos=b,
+  showstringspaces=false
+}
+
+% Header/Footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Distributed Systems -- Workshop 5}
+\fancyhead[R]{\small Semester II 2026}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Section formatting
+\titleformat{\section}{\large\bfseries\color{primaryblue}}{}{0em}{\thesection\quad}[\titlerule]
+\titleformat{\subsection}{\normalsize\bfseries}{}{0em}{\thesubsection\quad}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=primaryblue,
+  urlcolor=codeblue,
+  citecolor=codeblue
+}
+
+%------------------------------------------------------------
+\begin{document}
+
+%------------------------------------------------------------
+\begin{titlepage}
+  \centering
+  \vspace*{1cm}
+  {\Huge\bfseries\color{primaryblue} Distributed Databases\\[0.4em]}
+  {\large\color{gray} Replication, Sharding, and Concurrency Control\\[2em]}
+  \rule{\linewidth}{0.5pt}\\[1.5em]
+  {\Large Workshop 5 -- Distributed Systems\\[0.5em]}
+  {\large Semester II, 2026\\[0.5em]}
+  {\large Prof.\ Francisco Hidrobo\\[2em]}
+  \rule{\linewidth}{0.5pt}\\[2em]
+  \begin{tabular}{ll}
+    \textbf{Group Members:} & Adriana Sofia Espinoza \\
+    & [Nombre Integrante 2] \\
+    & [Nombre Integrante 3] \\[1.5em]
+    \textbf{Date:} & October 1, 2026 \\
+    \textbf{Repository:} & adrianasofiaespinoza/Sistemas-Distribuidos \\
+  \end{tabular}
+\end{titlepage}
+
+%------------------------------------------------------------
+\tableofcontents
+\newpage
+
+%------------------------------------------------------------
+\section{Docker Topology -- Activity 1}
+
+\subsection{Infrastructure Overview}
+
+The workshop provisions three independent MySQL~8.0 containers using Docker
+Compose, forming two distinct distributed-database patterns:
+
+\begin{itemize}[leftmargin=1.5cm]
+  \item \textbf{mysql-primary} (port 3306) -- The primary write node.
+        Binary logging and GTID mode are enabled so that the replica can track
+        every committed transaction. This node also serves as \emph{Shard~1}
+        for the horizontal-sharding exercise.
+  \item \textbf{mysql-replica} (port 3307) -- Read-only asynchronous replica.
+        It consumes the binary log produced by the primary and applies each
+        event in strict commit order.
+  \item \textbf{mysql-shard2} (port 3308) -- Completely independent node that
+        holds \emph{Shard~2}. It is not part of the replication chain.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Container} & \textbf{Host Port} & \textbf{Role} \\
+\hline
+mysql-primary  & 3306 & Primary / Shard 1 \\
+mysql-replica  & 3307 & Replica (read-only) \\
+mysql-shard2   & 3308 & Shard 2 \\
+\hline
+\end{tabular}
+\caption{Docker container topology.}
+\end{figure}
+
+\subsection{docker-compose.yml (key excerpts)}
+
+\begin{lstlisting}[style=sqlstyle, caption={Primary node configuration.}]
+mysql-primary:
+  image: mysql:8.0
+  container_name: mysql-primary
+  environment:
+    MYSQL_ROOT_PASSWORD: root
+    MYSQL_DATABASE: lab
+  command:
+    - --server-id=1
+    - --log-bin=mysql-bin
+    - --binlog-format=ROW
+    - --gtid-mode=ON
+    - --enforce-gtid-consistency=ON
+    - --log-replica-updates=ON
+  ports: ["3306:3306"]
+\end{lstlisting}
+
+\subsection{Verification}
+
+After running \texttt{docker compose up -d}, all three nodes responded to
+\texttt{mysqladmin ping}:
+
+\begin{lstlisting}[style=bashstyle, caption={All nodes alive.}]
+$ docker exec mysql-primary mysqladmin ping -uroot -proot
+mysqld is alive
+$ docker exec mysql-replica mysqladmin ping -uroot -proot
+mysqld is alive
+$ docker exec mysql-shard2  mysqladmin ping -uroot -proot
+mysqld is alive
+\end{lstlisting}
+
+%------------------------------------------------------------
+\section{Primary--Replica Replication -- Activity 2}
+
+\subsection{Configuration Steps}
+
+A dedicated replication account was created on the primary:
+
+\begin{lstlisting}[style=sqlstyle, caption={Creating the replication user.}]
+CREATE USER IF NOT EXISTS 'repl'@'%' IDENTIFIED BY 'repl';
+GRANT REPLICATION SLAVE ON *.* TO 'repl'@'%';
+FLUSH PRIVILEGES;
+\end{lstlisting}
+
+The replica was then pointed at the primary using GTID auto-positioning:
+
+\begin{lstlisting}[style=sqlstyle, caption={Replica configuration.}]
+STOP REPLICA;
+CHANGE REPLICATION SOURCE TO
+  SOURCE_HOST='mysql-primary',
+  SOURCE_USER='repl',
+  SOURCE_PASSWORD='repl',
+  SOURCE_AUTO_POSITION=1,
+  GET_SOURCE_PUBLIC_KEY=1;
+START REPLICA;
+\end{lstlisting}
+
+\subsection{Replication Status Evidence}
+
+\begin{lstlisting}[style=bashstyle, caption={SHOW REPLICA STATUS output (relevant fields).}]
+Replica_IO_State: Waiting for source to send event
+Source_Host:      mysql-primary
+Replica_IO_Running:   Yes
+Replica_SQL_Running:  Yes
+Seconds_Behind_Source: 0
+Retrieved_Gtid_Set: a97f157f-bdb3-11f1-b391-12c9eefbbc21:1-9
+Executed_Gtid_Set:  a97f157f-bdb3-11f1-b391-12c9eefbbc21:1-9
+\end{lstlisting}
+
+Both \texttt{Replica\_IO\_Running} and \texttt{Replica\_SQL\_Running} report
+\textbf{Yes}, confirming the replication channel is healthy.
+
+\subsection{Data Replication Test}
+
+A row was inserted on the primary and read back from the replica:
+
+\begin{lstlisting}[style=sqlstyle, caption={Insert on primary.}]
+CREATE TABLE IF NOT EXISTS replication_test
+  (id INT PRIMARY KEY, note VARCHAR(80));
+INSERT INTO replication_test VALUES (1, 'created on primary');
+\end{lstlisting}
+
+\begin{lstlisting}[style=bashstyle, caption={Query on replica -- row successfully replicated.}]
+-- On mysql-replica:
+SELECT * FROM replication_test;
++----+--------------------+
+| id | note               |
++----+--------------------+
+|  1 | created on primary |
++----+--------------------+
+\end{lstlisting}
+
+\subsection{Discussion Question}
+
+\textbf{Why is the replica read-only?} \\[0.3em]
+The replica is configured with \texttt{--read-only=ON} to guarantee that all
+writes enter the system through a single authoritative node.  If both nodes
+accepted independent writes, the binary log streams would diverge: each node
+would generate its own GTID events, and those events would never be
+automatically merged.  The result would be two separate histories with no
+built-in reconciliation mechanism, leading to split-brain and permanent data
+inconsistency.
+
+%------------------------------------------------------------
+\section{Horizontal Sharding -- Activity 3}
+
+\subsection{Sharding Rule}
+
+The user table is partitioned by a simple modular rule on the primary key:
+
+\[
+  \text{shard}(id) =
+  \begin{cases}
+    \text{Shard 1 (mysql-primary)} & \text{if } id \bmod 2 = 0 \\
+    \text{Shard 2 (mysql-shard2)}  & \text{if } id \bmod 2 = 1
+  \end{cases}
+\]
+
+\subsection{Schema Creation}
+
+\begin{lstlisting}[style=sqlstyle, caption={Schema on both shards (identical structure).}]
+-- Shard 1
+CREATE DATABASE IF NOT EXISTS users_shard1;
+CREATE TABLE IF NOT EXISTS users_shard1.users (
+  id    INT PRIMARY KEY,
+  name  VARCHAR(50),
+  email VARCHAR(80),
+  city  VARCHAR(50)
+);
+-- Shard 2 (same DDL, different database)
+CREATE DATABASE IF NOT EXISTS users_shard2;
+CREATE TABLE IF NOT EXISTS users_shard2.users ( ... );
+\end{lstlisting}
+
+\subsection{Data on Each Fragment}
+
+\begin{lstlisting}[style=bashstyle, caption={Shard 1 -- even IDs (mysql-primary).}]
+SELECT * FROM users_shard1.users ORDER BY id;
++----+-------------+----------------------+----------+
+| id | name        | email                | city     |
++----+-------------+----------------------+----------+
+|  2 | Ana Gomez   | ana.gomez@mail.com   | Bogota   |
+|  4 | Carlos Ruiz | carlos.ruiz@mail.com | Medellin |
+|  6 | Lucia Perez | lucia.perez@mail.com | Cali     |
++----+-------------+----------------------+----------+
+\end{lstlisting}
+
+\begin{lstlisting}[style=bashstyle, caption={Shard 2 -- odd IDs (mysql-shard2).}]
+SELECT * FROM users_shard2.users ORDER BY id;
++----+--------------+-----------------------+--------------+
+| id | name         | email                 | city         |
++----+--------------+-----------------------+--------------+
+|  1 | Mario Lopez  | mario.lopez@mail.com  | Barranquilla |
+|  3 | Sofia Torres | sofia.torres@mail.com | Cartagena    |
+|  5 | Diego Castro | diego.castro@mail.com | Bucaramanga  |
++----+--------------+-----------------------+--------------+
+\end{lstlisting}
+
+\subsection{Reconstructed Logical Result}
+
+Since no single SQL engine spans both servers, the coordinator (the
+application layer) merges both result sets:
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{c l l l c}
+\toprule
+\textbf{id} & \textbf{name} & \textbf{email} & \textbf{city} & \textbf{Shard} \\
+\midrule
+1 & Mario Lopez  & mario.lopez@mail.com  & Barranquilla & 2 \\
+2 & Ana Gomez    & ana.gomez@mail.com    & Bogota       & 1 \\
+3 & Sofia Torres & sofia.torres@mail.com & Cartagena    & 2 \\
+4 & Carlos Ruiz  & carlos.ruiz@mail.com  & Medellin     & 1 \\
+5 & Diego Castro & diego.castro@mail.com & Bucaramanga  & 2 \\
+6 & Lucia Perez  & lucia.perez@mail.com  & Cali         & 1 \\
+\bottomrule
+\end{tabularx}
+\caption{Full user set reconstructed by the coordinator.}
+\end{table}
+
+\subsection{Vertical Sharding Challenge}
+
+A vertical sharding design splits columns across nodes instead of rows:
+
+\begin{itemize}
+  \item \textbf{Node A (identity):} \texttt{id}, \texttt{name}
+  \item \textbf{Node B (contact):} \texttt{id}, \texttt{email}, \texttt{city}
+\end{itemize}
+
+To reconstruct a complete user, the application queries both nodes and joins
+on \texttt{id}.  This approach benefits write-heavy workloads where identity
+fields are updated far less often than contact details, allowing each shard to
+be placed on hardware tuned for its specific access pattern.
+
+%------------------------------------------------------------
+\section{Lost Update and Locking -- Activity 4}
+
+\subsection{4.1 -- Reproducing the Lost Update}
+
+The accounts table was created with initial balances of 1000 for both Alice
+and Bob.  Two sessions used \texttt{READ COMMITTED} isolation and performed a
+naive read-modify-write cycle:
+
+\begin{figure}[H]
+\centering
+\begin{tabular}{p{0.45\linewidth}|p{0.45\linewidth}}
+\textbf{Session A} & \textbf{Session B} \\
+\hline
+\texttt{SET SESSION TRANSACTION} \newline \texttt{ISOLATION LEVEL READ COMMITTED;} &
+\texttt{SET SESSION TRANSACTION} \newline \texttt{ISOLATION LEVEL READ COMMITTED;} \\
+\texttt{START TRANSACTION;} & \texttt{START TRANSACTION;} \\
+\texttt{SELECT balance ...} $\to$ 1000 & \texttt{SELECT balance ...} $\to$ 1000 \\
+computes $1000 + 100 = 1100$ & computes $1000 - 50 = 950$ \\
+\texttt{UPDATE ... SET balance=1100} & \\
+\texttt{COMMIT;} & \\
+& \texttt{UPDATE ... SET balance=950} \\
+& \texttt{COMMIT;} \\
+\end{tabular}
+\caption{Lost update scenario -- Session B overwrites Session A.}
+\end{figure}
+
+\textbf{Observed final balance: 950.} The mathematically correct value, 1050,
+was not preserved because Session B read the pre-A value (1000), computed its
+delta from that stale baseline, and overwrote A's committed change.  Under
+\texttt{READ COMMITTED}, each statement sees the latest committed snapshot, but
+the application-level read and write are not atomic.
+
+\subsection{4.2 -- Fix with SELECT \ldots FOR UPDATE}
+
+The balance was reset to 1000.  With pessimistic locking, Session A
+immediately acquires an exclusive row lock:
+
+\begin{lstlisting}[style=sqlstyle, caption={Serialized execution with FOR UPDATE.}]
+-- Session A
+START TRANSACTION;
+SELECT balance FROM accounts WHERE id=1 FOR UPDATE;  -- acquires lock
+UPDATE accounts SET balance = balance + 100 WHERE id=1;
+COMMIT;
+
+-- Session B (blocks at FOR UPDATE until A commits)
+START TRANSACTION;
+SELECT balance FROM accounts WHERE id=1 FOR UPDATE;  -- waits...
+UPDATE accounts SET balance = balance - 50  WHERE id=1;
+COMMIT;
+\end{lstlisting}
+
+\begin{lstlisting}[style=bashstyle, caption={Final balance after locking fix.}]
+SELECT id, owner, balance FROM accounts WHERE id=1;
++----+-------+---------+
+| id | owner | balance |
++----+-------+---------+
+|  1 | Alice |    1050 |
++----+-------+---------+
+\end{lstlisting}
+
+The final balance is \textbf{1050}, as expected.  Session B was forced to
+wait for A to release the lock before reading the already-updated value (1100),
+so it correctly computed $1100 - 50 = 1050$.
+
+%------------------------------------------------------------
+\section{Read-After-Write Consistency -- Activity 5}
+
+\subsection{Asynchronous Read}
+
+A write was performed on the primary and the replica was queried immediately:
+
+\begin{lstlisting}[style=bashstyle, caption={Write on primary, immediate replica read.}]
+-- PRIMARY
+UPDATE accounts SET balance=balance+1 WHERE id=1;
+SELECT id,balance,updated_at FROM accounts WHERE id=1;
++----+---------+---------------------+
+| id | balance | updated_at          |
++----+---------+---------------------+
+|  1 |    1051 | 2026-10-01 16:20:07 |
+
+-- REPLICA (immediate read)
+SELECT id,balance,updated_at FROM accounts WHERE id=1;
++----+---------+---------------------+
+| id | balance | updated_at          |
++----+---------+---------------------+
+|  1 |    1051 | 2026-10-01 16:20:07 |
+\end{lstlisting}
+
+On this fast local machine the replica had already caught up; the read was
+consistent.  In production over a wide-area link, a stale value (1050) would
+be observable during the replication lag window.
+
+\subsection{GTID-Based Monotonic Read}
+
+The primary's committed GTID set was captured:
+
+\begin{lstlisting}[style=bashstyle, caption={GTID set on primary.}]
+SELECT @@GLOBAL.gtid_executed;
+a97f157f-bdb3-11f1-b391-12c9eefbbc21:1-23
+\end{lstlisting}
+
+The replica was then asked to wait until it had applied that exact set:
+
+\begin{lstlisting}[style=sqlstyle, caption={WAIT\_FOR\_EXECUTED\_GTID\_SET on replica.}]
+SELECT WAIT_FOR_EXECUTED_GTID_SET(
+  'a97f157f-bdb3-11f1-b391-12c9eefbbc21:1-23', 5);
+-- Returns: 0  (set fully applied within 5 s)
+\end{lstlisting}
+
+\textbf{Result: 0} -- the replica had applied the full GTID set before the
+timeout.  A return value of 0 guarantees that any subsequent read on the
+replica will reflect at least the writes captured in that GTID set, satisfying
+a \emph{read-your-writes} requirement: after a client issues a write, it can
+obtain the primary's GTID and pass it to the next read request; the read is
+routed to a replica only after \texttt{WAIT\_FOR\_EXECUTED\_GTID\_SET} returns
+0.
+
+%------------------------------------------------------------
+\section{Deadlock and Prevention -- Activity 6}
+
+\subsection{6.1 -- Reproducing the Deadlock}
+
+Two Python threads connected to the primary and acquired locks in opposite
+orders:
+
+\begin{figure}[H]
+\centering
+\begin{tabular}{p{0.45\linewidth}|p{0.45\linewidth}}
+\textbf{Session A} & \textbf{Session B} \\
+\hline
+\texttt{START TRANSACTION;} & \texttt{START TRANSACTION;} \\
+\texttt{UPDATE ... WHERE id=1} $\to$ locks row 1 & \\
+& \texttt{UPDATE ... WHERE id=2} $\to$ locks row 2 \\
+\texttt{UPDATE ... WHERE id=2} $\to$ \textbf{waits} & \\
+& \texttt{UPDATE ... WHERE id=1} $\to$ \textbf{waits} \\
+\textbf{COMMITTED} & \textbf{ERROR 1213 (victim)} \\
+\end{tabular}
+\caption{Deadlock scenario -- circular lock dependency.}
+\end{figure}
+
+\begin{lstlisting}[style=bashstyle, caption={Observed deadlock output.}]
+[A] Locked row 1, waiting 2s before locking row 2...
+[B] Locked row 2, waiting 2s before locking row 1...
+[B] ERROR 1213: Deadlock found when trying to get lock;
+                try restarting transaction
+[A] COMMITTED
+
+Session A result: COMMITTED
+Session B result: ERROR 1213: Deadlock found when trying
+                  to get lock; try restarting transaction
+\end{lstlisting}
+
+MySQL's deadlock detector selected Session B as the victim (it had performed
+fewer row-level operations) and rolled it back automatically, releasing all of
+B's locks so Session A could proceed.
+
+\subsection{6.2 -- Prevention with Consistent Locking Order}
+
+Both sessions were rewritten to acquire an exclusive lock on \emph{all
+relevant rows in ascending id order} before performing any write:
+
+\begin{lstlisting}[style=sqlstyle, caption={Ordered lock acquisition in both sessions.}]
+START TRANSACTION;
+SELECT * FROM accounts
+  WHERE id IN (1,2) ORDER BY id FOR UPDATE;
+-- then perform the session's specific updates
+COMMIT;
+\end{lstlisting}
+
+\begin{lstlisting}[style=bashstyle, caption={No deadlock -- Session B blocks, then commits.}]
+[A] Acquired locks on rows 1,2.
+[B] Attempting to lock rows 1,2 in order (will block)...
+[A] COMMITTED
+[B] Acquired locks. Rows: [(1,'Alice',1010,...), (2,'Bob',990,...)]
+[B] COMMITTED
+
+Session A result: COMMITTED
+Session B result: COMMITTED
+\end{lstlisting}
+
+\subsection{Blocking vs.\ Deadlock}
+
+\begin{description}
+  \item[Blocking] occurs when one transaction holds a lock that another
+    transaction needs.  The second transaction waits until the first commits or
+    rolls back.  It resolves \emph{automatically} and is an expected part of
+    concurrent operation.
+  \item[Deadlock] occurs when two (or more) transactions each hold a lock the
+    other needs, forming a \emph{circular dependency} that can never resolve on
+    its own.  The database must intervene by aborting one transaction.
+\end{description}
+
+By always acquiring multiple row locks in the same canonical order, the
+circular dependency is structurally impossible: if A holds lock 1 and wants
+lock 2, B -- which also wants lock 1 first -- will simply block waiting for
+lock 1, breaking the cycle.
+
+%------------------------------------------------------------
+\section{Discussion}
+
+Replication, sharding, and concurrency control each address a distinct
+dimension of the distributed-database problem:
+
+\textbf{Replication} increases \emph{availability} and \emph{read throughput}.
+By maintaining a continuously updated copy of the primary's data, the system
+can serve read traffic from the replica and survive a primary failure
+(after a failover procedure).  The trade-off is eventual consistency:
+asynchronous replication introduces a lag window during which replicas may
+serve stale reads.  GTID-based mechanisms such as
+\texttt{WAIT\_FOR\_EXECUTED\_GTID\_SET} allow the application to opt in to
+stronger guarantees selectively.
+
+\textbf{Fragmentation (sharding)} improves \emph{write scalability} and
+\emph{storage capacity}.  Horizontal sharding distributes rows across
+independent nodes, so each shard handles a fraction of the write load and
+stores a fraction of the data.  Vertical sharding splits columns, enabling
+separate scaling for different access patterns.  Both strategies require the
+application layer (or a middleware coordinator) to route queries and merge
+partial results, adding operational complexity.
+
+\textbf{Concurrency control} preserves \emph{data integrity} under parallel
+access.  Without it, interleaved read-modify-write cycles produce lost updates
+(as shown in Activity 4), and unordered multi-row locking produces deadlocks
+(Activity 6).  Pessimistic locking (\texttt{SELECT \ldots FOR UPDATE})
+serializes conflicting transactions at the cost of reduced concurrency;
+optimistic schemes (MVCC, OCC) allow more parallelism at the cost of
+occasional abort-and-retry.
+
+Together, the three mechanisms operate at complementary layers: replication
+handles \emph{node-level} redundancy and read scaling; sharding handles
+\emph{data-level} partitioning; and concurrency control handles
+\emph{transaction-level} correctness.  A production distributed database
+typically employs all three simultaneously.
+
+%------------------------------------------------------------
+\end{document}
